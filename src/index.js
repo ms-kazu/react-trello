@@ -1,12 +1,15 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import {DragDropContext, Droppable} from 'react-beautiful-dnd';
+import {DragDropContext} from 'react-beautiful-dnd';
 import styled from "styled-components";
 import UUID from 'uuidjs';
 
-import { Schedules } from './Schedules';
-
 import "./styles.css";
+
+
+import { DragDropArea } from './DragDropArea'
+import { Addbutton } from './AddButton';
+import { Modal } from './Modal';
 
 const week = [
   {
@@ -155,7 +158,6 @@ const App = () => {
     const {source, destination} = result;
     if(!destination) return;
     if (source.droppableId !== destination.droppableId) {
-      console.log("ss");
       const sourceColumn = [...allItems[`${source.droppableId}`]];
       const destinationColumn  = [...allItems[`${destination.droppableId}`]];
       const remove = sourceColumn[0].splice(source.index, 1);
@@ -163,7 +165,6 @@ const App = () => {
       sourceColumn[1](sourceColumn[0]);
       destinationColumn[1](destinationColumn[0]);
     } else {
-      console.log("bb");
       const resDayId = source.droppableId;
       const copiedColumItems = [...allItems[`${resDayId}`]]
       const remove = copiedColumItems[0].splice(source.index, 1);
@@ -250,16 +251,14 @@ const App = () => {
     }
   };
 
-  const SKanbanBoard = styled.div`
-    height: 90vh;
-  `;
+  const [show, setShow] = useState(false)
 
-  const SDragDropArea = styled.div`
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 3px;
-    text-align: center;
+  const onClickAddModal = () => {
+    setShow(!show)
+  }
+
+  const SKanbanBoard = styled.div`
+    height: 100vh;
   `;
 
   const SDragDropWrapper = styled.div`
@@ -273,21 +272,8 @@ const App = () => {
 
   const STitle = styled.h1`
     color: #344168;
-    margin-left: 10px;
-  `
-
-  const SAddbutton = styled.button`
-    border: 1px solid #55B1DF;
-    font-weight: bold;
-    border-radius: 5px;
-    background-color: #55B1DF;
-    color: #fff;
-    :hover{
-      background-color: #fff;
-      color: #55B1DF;
-      border: 1px solid #55B1DF;
-      cursor: pointer;
-    }
+    margin-left: 20px;
+    margin-bottom: 10px;
   `
 
   const SbuttonWrapper = styled.div`
@@ -295,20 +281,42 @@ const App = () => {
     margin: 5px;
     margin-bottom: 5px;
   `
-
-
   const SCardWrapper = styled.div`
     width: 14%;
     margin: 0 auto;
     text-align: center;
-    flex-direction: colums;
+    flex-direction: column;
     align-items: center;
+  `
+
+  const SAddbuttonWrapper = styled.div`
+    text-align: right;
+  `
+
+  const SAddModalButton = styled.button`
+    width:  100px;
+    border-radius: 100px;
+    border: 2px solid #37B0BE;
+    background-color: #fff;
+    color: #37B0BE;
+    font-weight: bold;
+    font-size: 16px;
+    height: 40px;
+    margin-right: 10px;
+    :hover{
+      background-color: #37B0BE;
+      color: #fff;
+      border: 2px solid #37B0BE;
+      cursor: pointer;
+    }
   `
 
   return (
     <>
-      <STitle>■デフォルトスケジュール</STitle>
+      <STitle><i class="far fa-calendar-alt fa-fw"></i>デフォルトスケジュール</STitle>
       <SKanbanBoard>
+        <SAddbuttonWrapper><SAddModalButton onClick={onClickAddModal}>登録</SAddModalButton></SAddbuttonWrapper>
+        <Modal show = {show} setShow = {setShow} ></Modal>
         <SDragDropWrapper  >
             <DragDropContext onDragEnd={onDragEnd}>
               {week.map((val) => {
@@ -316,28 +324,12 @@ const App = () => {
                 <SCardWrapper>
                 <SAreaTitle>{val.dow}</SAreaTitle> 
                 <SbuttonWrapper>
-                  <SAddbutton value={val.dayId} onClick={onClickAddCard}>＋</SAddbutton>
+                  <Addbutton 
+                  val={val} 
+                  onClickAddCard={onClickAddCard}>
+                  </Addbutton>
                 </SbuttonWrapper>
-                    <Droppable droppableId={val.dayId} key={val.dayId}>
-                      {(provided, snapshot) => (
-                        <SDragDropArea 
-                          {...provided.droppableProps} 
-                          ref={provided.innerRef} 
-                          style={{ 
-                            backgroundColor: snapshot.isDraggingOver ? val.color : '',
-                          }}
-                        >
-                          {val.dayId == "Sun" && <Schedules schedules={SunItems}></Schedules>}
-                          {val.dayId == "Mon" && <Schedules schedules={MonItems}></Schedules>}
-                          {val.dayId == "Tue" && <Schedules schedules={TueItems}></Schedules>}
-                          {val.dayId == "Wed" && <Schedules schedules={WedItems}></Schedules>}
-                          {val.dayId == "Thu" && <Schedules schedules={ThuItems}></Schedules>}
-                          {val.dayId == "Fri" && <Schedules schedules={FriItems}></Schedules>}
-                          {val.dayId == "Sat" && <Schedules schedules={SatItems}></Schedules>}
-                          {provided.placeholder}
-                        </SDragDropArea>
-                      )}
-                    </Droppable>
+                    <DragDropArea val={val} allItems={allItems}></DragDropArea>
                   </SCardWrapper>
               )})}
             </DragDropContext>
