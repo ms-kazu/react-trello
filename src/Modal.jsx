@@ -28,10 +28,11 @@ const SModal = styled.div`
 
   const SModalCloseButton = styled.button`
     float: right;
+    margin: 5px;
     background-color: #fff;
     border: none;
-    border-radius: 10px;
     font-size: 15px;
+    text-align: center;
   `
 
 
@@ -41,16 +42,16 @@ export const Modal = (props) => {
   const {show, setShow} = props;
   console.log(setShow);
 
-  const onClickModalCloseButton = () =>{
+  const onClickModalClose = () =>{
     setShow(!show)
   }
 
   if (show) {
     return(
       <>
-        <SModalBack></SModalBack>
+        <SModalBack onClick={onClickModalClose}></SModalBack>
         <SModal>
-          <SModalCloseButton onClick={onClickModalCloseButton}>✖️</SModalCloseButton>
+          <SModalCloseButton onClick={onClickModalClose}>✖️</SModalCloseButton>
         </SModal>
       </>
     )
