@@ -1,48 +1,59 @@
 import React, {useState} from 'react';
 import ReactDOM from 'react-dom';
-import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import {DragDropContext, Droppable} from 'react-beautiful-dnd';
 import styled from "styled-components";
+import UUID from 'uuidjs';
+
+import { Schedules } from './Schedules';
 
 import "./styles.css";
 
-const App = () => {
-  // const week = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
-  const week = [
-    {
-      "dow": "日曜日",
-      "dayId": "Sun"
-    },
-    {
-      "dow": "月曜日",
-      "dayId": "Mon"
-    },
-    {
-      "dow": "火曜日",
-      "dayId": "Tue"
-    },
-    {
-      "dow": "水曜日",
-      "dayId": "Wed"
-    },
-    {
-      "dow": "木曜日",
-      "dayId": "Thu"
-    },
-    {
-      "dow": "金曜日",
-      "dayId": "Fri"
-    },
-    {
-      "dow": "土曜日",
-      "dayId": "Sat"
-    },
-  ];
+const week = [
+  {
+    "dow": "日曜日",
+    "dayId": "Sun",
+    "color": "#f0f8ff"
+  },
+  {
+    "dow": "月曜日",
+    "dayId": "Mon",
+    "color": "#66cdaa"
+  },
+  {
+    "dow": "火曜日",
+    "dayId": "Tue",
+    "color": "#fffacd"
+  },
+  {
+    "dow": "水曜日",
+    "dayId": "Wed",
+    "color": "#e6cde3"
+  },
+  {
+    "dow": "木曜日",
+    "dayId": "Thu",
+    "color": "#c1c1ff"
+  },
+  {
+    "dow": "金曜日",
+    "dayId": "Fri",
+    "color": "#ffcccc"
+  },
+  {
+    "dow": "土曜日",
+    "dayId": "Sat",
+    "color": "#b2ffff"
+  },
+];
 
-  const [items, setItems] = useState(
+
+
+const App = () => {
+  const [SunItems, setSunItems] = useState(
     [...Array(4).keys()].map((val) => {
       return{
-        id: val,
-        text: `田中_${val}`,
+        id: UUID.generate(),
+        text: `日田_${val}`,
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -51,57 +62,217 @@ const App = () => {
     })
   );
 
-  const onDragEnd = (result) => {
-    const remove = items.splice(result.source.index, 1);
-    console.log(remove);
-    items.splice(result.destination.index, 0, remove[0]);
-    console.log(items);
-  };
+  const [MonItems, setMonItems] = useState(
+    [...Array(4).keys()].map((val) => {
+      return{
+        id: UUID.generate(),
+        text: `月田_${val}`,
+        category: "マッサージ",
+        eventStart: "11:00",
+        eventEnd: "11:15",
+        dayId: "Mon"
+      }
+    })
+  );
+
+  const [TueItems, setTueItems] = useState(
+    [...Array(4).keys()].map((val) => {
+      return{
+        id: UUID.generate(),
+        text: `火田_${val}`,
+        category: "マッサージ",
+        eventStart: "11:00",
+        eventEnd: "11:15",
+        dayId: "Tue"
+      }
+    })
+  );
+
+  const [WedItems, setWedItems] = useState(
+    [...Array(4).keys()].map((val) => {
+      return{
+        id: UUID.generate(),
+        text: `水田_${val}`,
+        category: "マッサージ",
+        eventStart: "11:00",
+        eventEnd: "11:15",
+        dayId: "Wed"
+      }
+    })
+  );
+
+  const [ThuItems, setThuItems] = useState(
+    [...Array(4).keys()].map((val) => {
+      return{
+        id: UUID.generate(),
+        text: `木田_${val}`,
+        category: "マッサージ",
+        eventStart: "11:00",
+        eventEnd: "11:15",
+        dayId: "Thu"
+      }
+    })
+  );
+
+  const [FriItems, setFriItems] = useState(
+    [...Array(4).keys()].map((val) => {
+      return{
+        id: UUID.generate(),
+        text: `金田_${val}`,
+        category: "マッサージ",
+        eventStart: "11:00",
+        eventEnd: "11:15",
+        dayId: "Fri"
+      }
+    })
+  );
+
+  const [SatItems, setSatItems] = useState(
+    [...Array(4).keys()].map((val) => {
+      return{
+        id: UUID.generate(),
+        text: `土田_${val}`,
+        category: "マッサージ",
+        eventStart: "11:00",
+        eventEnd: "11:15",
+        dayId: "Sat"
+      }
+    })
+  );
+
   
+  const allItems = {
+    "Sun": [SunItems, setSunItems],
+    "Mon": [MonItems, setMonItems],
+    "Tue": [TueItems, setTueItems],
+    "Wed": [WedItems, setWedItems],
+    "Thu": [ThuItems, setThuItems],
+    "Fri": [FriItems, setFriItems],
+    "Sat": [SatItems, setSatItems],
+  }
 
-  const onClickAddCard = () => {
-    const length = items.length;
-    let item = {
-      id: length,
-      text: `斉藤_${length}`,
-      category: "はりきゅう",
-      eventStart: "11:00",
-      eventEnd: "11:15",
-      dow: "sun"
-    };
-    const newItems = [...items, item]
-    setItems(newItems);
+  const onDragEnd = (result, columns, setColmuns) => {
+    const {source, destination} = result;
+    if(!destination) return;
+    if (source.droppableId !== destination.droppableId) {
+      console.log("ss");
+      const sourceColumn = [...allItems[`${source.droppableId}`]];
+      const destinationColumn  = [...allItems[`${destination.droppableId}`]];
+      const remove = sourceColumn[0].splice(source.index, 1);
+      destinationColumn[0].splice(destination.index, 0, remove[0]);
+      sourceColumn[1](sourceColumn[0]);
+      destinationColumn[1](destinationColumn[0]);
+    } else {
+      console.log("bb");
+      const resDayId = source.droppableId;
+      const copiedColumItems = [...allItems[`${resDayId}`]]
+      const remove = copiedColumItems[0].splice(source.index, 1);
+      copiedColumItems[0].splice(destination.index, 0, remove[0]);
+      copiedColumItems[1](copiedColumItems[0]);
+    }
   };
 
+  let item = {
+    id: 0,
+    text: "",
+    category: "はりきゅう",
+    eventStart: "11:00",
+    eventEnd: "11:15",
+    dayId: 0
+  };
+
+  const onClickAddCard = (e) => {
+    let dayId = e.target.value;
+    let length;
+    let newItems;
+
+    console.log(dayId);
+
+    item.dayId = dayId;
+
+    switch (dayId) {
+      case "Sun":
+        length = SunItems.length;
+        item.id = SunItems.length;
+        item.text = `斉藤_${length}`
+        newItems = [...SunItems, item]
+        setSunItems(newItems);
+
+        break;
+      case "Mon":
+        length = MonItems.length;
+        item.id = MonItems.length;
+        item.text = `斉藤_${length}`
+        newItems = [...MonItems, item]
+        setMonItems(newItems);
+
+        break;
+      case "Tue":
+        length = TueItems.length;
+        item.id = TueItems.length;
+        item.text = `斉藤_${length}`
+        newItems = [...TueItems, item]
+        setTueItems(newItems);
+
+        break;
+      case "Wed":
+        length = WedItems.length;
+        item.id = WedItems.length;
+        item.text = `斉藤_${length}`
+        newItems = [...WedItems, item]
+        setWedItems(newItems);
+
+        break;
+      case "Thu":
+        length = ThuItems.length;
+        item.id = ThuItems.length;
+        item.text = `斉藤_${length}`
+        newItems = [...ThuItems, item]
+        setThuItems(newItems);
+
+        break;
+      case "Fri":
+        length = FriItems.length;
+        item.id = FriItems.length;
+        item.text = `斉藤_${length}`
+        newItems = [...FriItems, item]
+        setFriItems(newItems);
+
+        break;
+      case "Sat":
+        item.id = SatItems.length;
+        item.text = `斉藤_${length}`
+        length = SatItems.length;
+        newItems = [...SatItems, item]
+        setSatItems(newItems);
+        
+        break;
+    }
+  };
 
   const SKanbanBoard = styled.div`
-    display: flex;
-    height: 85vh;
+    height: 90vh;
   `;
 
   const SDragDropArea = styled.div`
     background-color: #fff;
     border-radius: 10px;
     padding: 5px;
+    width: 13%;
+    margin: 5px;
   `;
 
   const SDragDropWrapper = styled.div`
     margin: 3px;
-    width: 20%;
-    text-align: center;
     overflow: scroll;
+    display: felx;
+
   `;
-  const SScheduleCard = styled.div`
-    margin: 5px auto;
-    width: 95%;
-    height: 120px;
-    background-color: #fff;
-    border: solid 1px #C8C8C8;
-    border-radius: 10px;
-  `
+  
 
   const SAreaTitle = styled.h2`
     color: #344168;
+    margin-bottom: 2px;
   `
 
   const STitle = styled.h1`
@@ -109,80 +280,70 @@ const App = () => {
     margin-left: 10px;
   `
 
-  const SPtName = styled.span`
-    font-size: 1rem;
-    display: block;
-  `
-
-  const SCategoryMark = styled.span`
-    display: block;
-    width: 40%;
-    margin: 10px;
-    border-radius: 9999px;
+  const SAddbutton = styled.button`
+    border: 1px solid #55B1DF;
+    font-weight: bold;
+    border-radius: 5px;
+    background-color: #55B1DF;
     color: #fff;
-    font-size: 0.5rem;
-    padding: 0.1rem 0.2rem;
+    :hover{
+      background-color: #fff;
+      color: #55B1DF;
+      border: 1px solid #55B1DF;
+    }
   `
 
-  const SMassMark = styled(SCategoryMark)`
-    background-color: green;
-  `;
-
-  const SHariMark = styled(SCategoryMark)`
-    background-color: blue;
-  `;
-
-  const SCardText = styled.p`
-    display: block;
-    font-size: 0.8rem;
+  const SbuttonWrapper = styled.div`
+    text-align: right;
+    margin-bottom: 5px;
   `
 
-  const Sicon = styled.span`
-    margin-right: 5px;
-  `
+
   return (
     <>
       <STitle>■デフォルトスケジュール</STitle>
       <SKanbanBoard>
-        {week.map((val) => (
-          <>
-            <SDragDropWrapper  key={val.dow}>
-            <SAreaTitle>{val.dow}</SAreaTitle>
-            <SDragDropArea>
-              <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId={val.dow}>
-                  {(provided, snapshot) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef} style={{ backgroundColor: snapshot.isDraggingOver ? '#f0f8ff' : '' }}>
-                    {items.map((item, index) => (
-                      <Draggable draggableId={item.text} index={index} key={item.id} dow={item.dow}>
-                        {(provided) =>
-                          <SScheduleCard
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <SPtName><Sicon><i class="fas fa-user-injured"></i></Sicon>{item.text}</SPtName>
-                              {item.category == "マッサージ"? <SMassMark>{item.category}</SMassMark> : <SHariMark>{item.category}</SHariMark> }
-                              <SCardText><Sicon><i class="fas fa-user-md"></i></Sicon>斉藤優</SCardText>
-                              <SCardText><Sicon><i class="far fa-clock"></i></Sicon>{item.eventStart}〜{item.eventEnd}</SCardText>
-                          </SScheduleCard>
-                        }
-                      </Draggable>
-                    ))}
-                      {provided.placeholder}
-                      <button onClick={onClickAddCard}>追加</button>
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-            </SDragDropArea>
-            </SDragDropWrapper>
-          </>
-        ))}
+        <SDragDropWrapper  >
+        {/* <SbuttonWrapper>
+          <SAddbutton value={val.dayId} onClick={onClickAddCard}>＋</SAddbutton>
+        </SbuttonWrapper> */}
+          
+            <DragDropContext onDragEnd={onDragEnd}>
+              {week.map((val) => {
+                return(
+                <>
+                  {/* <SAreaTitle>{val.dow}</SAreaTitle>  */}
+                  <SDragDropArea>
+                    <Droppable droppableId={val.dayId} key={val.dayId}>
+                      {(provided, snapshot) => (
+                        <div 
+                          {...provided.droppableProps} 
+                          ref={provided.innerRef} 
+                          style={{ 
+                            backgroundColor: snapshot.isDraggingOver ? val.color : '',
+                          }}
+                        >
+                          {val.dayId == "Sun" && <Schedules schedules={SunItems}></Schedules>}
+                          {val.dayId == "Mon" && <Schedules schedules={MonItems}></Schedules>}
+                          {val.dayId == "Tue" && <Schedules schedules={TueItems}></Schedules>}
+                          {val.dayId == "Wed" && <Schedules schedules={WedItems}></Schedules>}
+                          {val.dayId == "Thu" && <Schedules schedules={ThuItems}></Schedules>}
+                          {val.dayId == "Fri" && <Schedules schedules={FriItems}></Schedules>}
+                          {val.dayId == "Sat" && <Schedules schedules={SatItems}></Schedules>}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </SDragDropArea>
+                  </>
+              )})}
+            </DragDropContext>
+        </SDragDropWrapper>
       </SKanbanBoard>
     </>
   );
 }
+
 
 ReactDOM.render(
   <React.StrictMode>
