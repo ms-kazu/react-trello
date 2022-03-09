@@ -149,9 +149,9 @@ const App = () => {
     "Thu": [ThuItems, setThuItems],
     "Fri": [FriItems, setFriItems],
     "Sat": [SatItems, setSatItems],
-  }
+  };
 
-  const onDragEnd = (result, columns, setColmuns) => {
+  const onDragEnd = (result) => {
     const {source, destination} = result;
     if(!destination) return;
     if (source.droppableId !== destination.droppableId) {
@@ -258,17 +258,13 @@ const App = () => {
     background-color: #fff;
     border-radius: 10px;
     padding: 5px;
-    width: 13%;
-    margin: 5px;
+    margin: 3px;
+    text-align: center;
   `;
 
   const SDragDropWrapper = styled.div`
-    margin: 3px;
-    overflow: scroll;
-    display: felx;
-
+    display: flex;
   `;
-  
 
   const SAreaTitle = styled.h2`
     color: #344168;
@@ -290,33 +286,41 @@ const App = () => {
       background-color: #fff;
       color: #55B1DF;
       border: 1px solid #55B1DF;
+      cursor: pointer;
     }
   `
 
   const SbuttonWrapper = styled.div`
     text-align: right;
+    margin: 5px;
     margin-bottom: 5px;
   `
 
+
+  const SCardWrapper = styled.div`
+    width: 14%;
+    margin: 0 auto;
+    text-align: center;
+    flex-direction: colums;
+    align-items: center;
+  `
 
   return (
     <>
       <STitle>■デフォルトスケジュール</STitle>
       <SKanbanBoard>
         <SDragDropWrapper  >
-        {/* <SbuttonWrapper>
-          <SAddbutton value={val.dayId} onClick={onClickAddCard}>＋</SAddbutton>
-        </SbuttonWrapper> */}
-          
             <DragDropContext onDragEnd={onDragEnd}>
               {week.map((val) => {
                 return(
-                <>
-                  {/* <SAreaTitle>{val.dow}</SAreaTitle>  */}
-                  <SDragDropArea>
+                <SCardWrapper>
+                <SAreaTitle>{val.dow}</SAreaTitle> 
+                <SbuttonWrapper>
+                  <SAddbutton value={val.dayId} onClick={onClickAddCard}>＋</SAddbutton>
+                </SbuttonWrapper>
                     <Droppable droppableId={val.dayId} key={val.dayId}>
                       {(provided, snapshot) => (
-                        <div 
+                        <SDragDropArea 
                           {...provided.droppableProps} 
                           ref={provided.innerRef} 
                           style={{ 
@@ -331,11 +335,10 @@ const App = () => {
                           {val.dayId == "Fri" && <Schedules schedules={FriItems}></Schedules>}
                           {val.dayId == "Sat" && <Schedules schedules={SatItems}></Schedules>}
                           {provided.placeholder}
-                        </div>
+                        </SDragDropArea>
                       )}
                     </Droppable>
-                  </SDragDropArea>
-                  </>
+                  </SCardWrapper>
               )})}
             </DragDropContext>
         </SDragDropWrapper>

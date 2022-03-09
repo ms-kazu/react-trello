@@ -20,7 +20,7 @@ export const Schedules = (props) => {
   `
   const SCategoryMark = styled.span`
     display: block;
-    width: 40%;
+    width: 30%;
     margin: 10px;
     border-radius: 9999px;
     color: #fff;
