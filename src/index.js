@@ -56,7 +56,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `日田_${val}`,
+        patient: `日田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -69,7 +70,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `月田_${val}`,
+        patient: `月田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -82,7 +84,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `火田_${val}`,
+        patient: `火田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -95,7 +98,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `水田_${val}`,
+        patient: `水田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -108,7 +112,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `木田_${val}`,
+        patient: `木田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -121,7 +126,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `金田_${val}`,
+        patient: `金田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -134,7 +140,8 @@ const App = () => {
     [...Array(4).keys()].map((val) => {
       return{
         id: UUID.generate(),
-        text: `土田_${val}`,
+        patient: `土田_${val}`,
+        practitioner: "坂田",
         category: "マッサージ",
         eventStart: "11:00",
         eventEnd: "11:15",
@@ -175,7 +182,7 @@ const App = () => {
 
   let item = {
     id: 0,
-    text: "",
+    patient: "",
     category: "はりきゅう",
     eventStart: "11:00",
     eventEnd: "11:15",
@@ -316,7 +323,7 @@ const App = () => {
       <STitle><i class="far fa-calendar-alt fa-fw"></i>デフォルトスケジュール</STitle>
       <SKanbanBoard>
         <SAddbuttonWrapper><SAddModalButton onClick={onClickAddModal}>登録</SAddModalButton></SAddbuttonWrapper>
-        <Modal show = {show} setShow = {setShow} ></Modal>
+        <Modal show = {show} setShow = {setShow} allItems = {allItems} ></Modal>
         <SDragDropWrapper  >
             <DragDropContext onDragEnd={onDragEnd}>
               {week.map((val) => {

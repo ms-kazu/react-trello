@@ -17,6 +17,9 @@ export const Schedules = (props) => {
     background-color: #fff;
     border: solid 1px #C8C8C8;
     border-radius: 10px;
+    :hover{
+      cursor: pointer;
+    }
   `
   const SCategoryMark = styled.span`
     display: block;
@@ -45,19 +48,24 @@ export const Schedules = (props) => {
     margin-right: 5px;
   `
 
+  const onClickCard = () => {
+    console.log("クリック")
+  }
+
   return(
     <>
     {schedules.map((item, index) => (
-      <Draggable draggableId={item.text} index={index} key={item.id} dow={item.dow}>
+      <Draggable draggableId={item.id} index={index} key={item.id} dow={item.dow}>
         {(provided) =>
           <SScheduleCard
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
+            onClick={onClickCard}
           >
-          <SPtName><Sicon><i class="fas fa-user-injured"></i></Sicon>{item.text}</SPtName>
+          <SPtName><Sicon><i class="fas fa-user-injured"></i></Sicon>{item.patient}</SPtName>
             {item.category == "マッサージ"? <SMassMark>{item.category}</SMassMark> : <SHariMark>{item.category}</SHariMark> }
-            <SCardText><Sicon><i class="fas fa-user-md"></i></Sicon>斉藤優</SCardText>
+            <SCardText><Sicon><i class="fas fa-user-md"></i></Sicon>{item.practitioner}</SCardText>
             <SCardText><Sicon><i class="far fa-clock"></i></Sicon>{item.eventStart}〜{item.eventEnd}</SCardText>
             </SScheduleCard>
         }
