@@ -165,7 +165,7 @@ export const Modal = (props) => {
   const [eventEnd, setEventEnd] = useState();
   const [selectedWeek, setSelectedWeek] = useState();
   const [category, setCategory] = useState();
-
+  console.log(eventStart);
   if (show) {
     return(
       <>

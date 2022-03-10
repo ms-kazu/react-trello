@@ -25,7 +25,7 @@ export const DragDropArea = (props) => {
             backgroundColor: snapshot.isDraggingOver ? val.color : '',
           }}
         >
-        <Schedules schedules={allItems[val.dayId][0]}></Schedules>
+        <Schedules schedules={allItems[val.dayId][0]} setSchedules={allItems[val.dayId][1]}></Schedules>
           {provided.placeholder}
         </SDragDropArea>
       )}

@@ -180,82 +180,20 @@ const App = () => {
     }
   };
 
-  let item = {
-    id: 0,
-    patient: "",
-    category: "はりきゅう",
-    eventStart: "11:00",
-    eventEnd: "11:15",
-    dayId: 0
-  };
-
   const onClickAddCard = (e) => {
-    let dayId = e.target.value;
-    let length;
-    let newItems;
-
-    console.log(dayId);
-
-    item.dayId = dayId;
-
-    switch (dayId) {
-      case "Sun":
-        length = SunItems.length;
-        item.id = SunItems.length;
-        item.text = `斉藤_${length}`
-        newItems = [...SunItems, item]
-        setSunItems(newItems);
-
-        break;
-      case "Mon":
-        length = MonItems.length;
-        item.id = MonItems.length;
-        item.text = `斉藤_${length}`
-        newItems = [...MonItems, item]
-        setMonItems(newItems);
-
-        break;
-      case "Tue":
-        length = TueItems.length;
-        item.id = TueItems.length;
-        item.text = `斉藤_${length}`
-        newItems = [...TueItems, item]
-        setTueItems(newItems);
-
-        break;
-      case "Wed":
-        length = WedItems.length;
-        item.id = WedItems.length;
-        item.text = `斉藤_${length}`
-        newItems = [...WedItems, item]
-        setWedItems(newItems);
-
-        break;
-      case "Thu":
-        length = ThuItems.length;
-        item.id = ThuItems.length;
-        item.text = `斉藤_${length}`
-        newItems = [...ThuItems, item]
-        setThuItems(newItems);
-
-        break;
-      case "Fri":
-        length = FriItems.length;
-        item.id = FriItems.length;
-        item.text = `斉藤_${length}`
-        newItems = [...FriItems, item]
-        setFriItems(newItems);
-
-        break;
-      case "Sat":
-        item.id = SatItems.length;
-        item.text = `斉藤_${length}`
-        length = SatItems.length;
-        newItems = [...SatItems, item]
-        setSatItems(newItems);
-        
-        break;
+    const dayId = e.target.value;
+    const newItem ={
+      id: UUID.generate(),
+      patient: "未設定",
+      practitioner: "未設定",
+      eventStart: "未設定",
+      eventEnd: "未設定",
+      category: "未設定",
+      dayId: dayId
     }
+    const targetColumn = allItems[dayId];
+    const newItems = [...targetColumn[0], newItem];
+    targetColumn[1](newItems);
   };
 
   const [show, setShow] = useState(false)

@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {Draggable} from 'react-beautiful-dnd';
 
 export const Schedules = (props) => {
-  const {schedules} = props;
+  const {schedules, setSchedules} = props;
 
   const SPtName = styled.span`
     font-size: 1rem;
@@ -24,7 +24,7 @@ export const Schedules = (props) => {
   const SCategoryMark = styled.span`
     display: block;
     width: 30%;
-    margin: 10px;
+    margin: 5px;
     border-radius: 9999px;
     color: #fff;
     font-size: 0.5rem;
@@ -42,14 +42,54 @@ export const Schedules = (props) => {
   const SCardText = styled.p`
     display: block;
     font-size: 0.8rem;
+    margin: 0 auto;
   `
 
   const Sicon = styled.span`
     margin-right: 5px;
   `
 
+  const SPatientColor = styled.div`
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #6FBEEE;
+    font-size: 10px;
+    color: white;
+  `
+  const SCardButton = styled.button`
+    width: 25px;
+    height: 25px;
+    font-size: 10px;
+    border-radius: 50%;
+    display: inline;
+    margin-right: 3px;
+    margin-bottom: 0;
+    border: none;
+    :hover{
+      cursor: pointer;
+      opacity: 0.5 ;
+    }
+  `
+
+  const SCardButtonWrapper = styled.div`
+    text-align: right;
+  `
+
   const onClickCard = () => {
-    console.log("クリック")
+  }
+
+  const onClickDeleteCard = (item) =>{
+    const result = window.confirm("削除しますか？");
+    if (result) {
+      const resId = item.id;
+      const targetIndex = schedules.findIndex(({id}) => id === resId);
+      const newSchedules = [...schedules]
+      newSchedules.splice(targetIndex, 1);
+      setSchedules(newSchedules)
+    }else{
+      return
+    }
   }
 
   return(
@@ -62,12 +102,15 @@ export const Schedules = (props) => {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             onClick={onClickCard}
-          >
-          <SPtName><Sicon><i class="fas fa-user-injured"></i></Sicon>{item.patient}</SPtName>
+          > 
+            <SCardButtonWrapper>
+              <SCardButton onClick={() => onClickDeleteCard(item)}><i class="fas fa-trash-alt"></i></SCardButton>
+            </SCardButtonWrapper>
+            <SPtName><Sicon><i class="fas fa-user-injured"></i></Sicon>{item.patient}</SPtName>
             {item.category == "マッサージ"? <SMassMark>{item.category}</SMassMark> : <SHariMark>{item.category}</SHariMark> }
             <SCardText><Sicon><i class="fas fa-user-md"></i></Sicon>{item.practitioner}</SCardText>
             <SCardText><Sicon><i class="far fa-clock"></i></Sicon>{item.eventStart}〜{item.eventEnd}</SCardText>
-            </SScheduleCard>
+          </SScheduleCard>
         }
       </Draggable>
       ))}
