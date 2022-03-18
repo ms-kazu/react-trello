@@ -1,14 +1,17 @@
 // import React, {useState} from 'react';
 import styled from "styled-components";
 import {Draggable} from 'react-beautiful-dnd';
+import { Modal } from './Modal';
+import { useState } from "react";
 
 export const Schedules = (props) => {
-  const {schedules, setSchedules} = props;
+  const {schedules, setSchedules, show, setShow, action, setAction, editItem, setEditItem} = props;
 
   const SPtName = styled.span`
     font-size: 1rem;
     display: block;
   `
+
   const SScheduleCard = styled.div`
     margin: 5px auto;
     padding: 3px;
@@ -17,9 +20,6 @@ export const Schedules = (props) => {
     background-color: #fff;
     border: solid 1px #C8C8C8;
     border-radius: 10px;
-    :hover{
-      cursor: pointer;
-    }
   `
   const SCategoryMark = styled.span`
     display: block;
@@ -65,10 +65,28 @@ export const Schedules = (props) => {
     display: inline;
     margin-right: 3px;
     margin-bottom: 0;
-    border: none;
     :hover{
       cursor: pointer;
-      opacity: 0.5 ;
+    }
+  `
+
+  const SCardDeleteButton = styled(SCardButton)`
+    color: red;
+    background-color: #fff;
+    border: red solid 1px;
+    :hover{
+      color: #fff;
+      background-color: red;
+    }
+  `
+
+  const SCardEditButton = styled(SCardButton)`
+    color: #40e0d0;
+    background-color: #fff;
+    border: #40e0d0 solid 1px;
+    :hover{
+      color: #fff;
+      background-color: #40e0d0;
     }
   `
 
@@ -76,8 +94,14 @@ export const Schedules = (props) => {
     text-align: right;
   `
 
-  const onClickCard = () => {
+  const onClickEditCard = (item) => {
+    setShow(!show)
+    setAction("edit")
+    setEditItem(item);
   }
+
+
+
 
   const onClickDeleteCard = (item) =>{
     const result = window.confirm("削除しますか？");
@@ -100,11 +124,11 @@ export const Schedules = (props) => {
           <SScheduleCard
             ref={provided.innerRef}
             {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            onClick={onClickCard}
+            {...provided.dragHandleProps}d
           > 
             <SCardButtonWrapper>
-              <SCardButton onClick={() => onClickDeleteCard(item)}><i class="fas fa-trash-alt"></i></SCardButton>
+              <SCardEditButton onClick={() => onClickEditCard(item)}><i class="fas fa-edit"></i></SCardEditButton>
+              <SCardDeleteButton onClick={() => onClickDeleteCard(item)}><i class="fas fa-trash-alt"></i></SCardDeleteButton>
             </SCardButtonWrapper>
             <SPtName><Sicon><i class="fas fa-user-injured"></i></Sicon>{item.patient}</SPtName>
             {item.category == "マッサージ"? <SMassMark>{item.category}</SMassMark> : <SHariMark>{item.category}</SHariMark> }

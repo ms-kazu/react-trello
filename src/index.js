@@ -196,10 +196,13 @@ const App = () => {
     targetColumn[1](newItems);
   };
 
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
+  const [action, setAction] = useState();
+  const [editItem, setEditItem] = useState();
 
   const onClickAddModal = () => {
     setShow(!show)
+    setAction("add")
   }
 
   const SKanbanBoard = styled.div`
@@ -261,20 +264,20 @@ const App = () => {
       <STitle><i class="far fa-calendar-alt fa-fw"></i>デフォルトスケジュール</STitle>
       <SKanbanBoard>
         <SAddbuttonWrapper><SAddModalButton onClick={onClickAddModal}>登録</SAddModalButton></SAddbuttonWrapper>
-        <Modal show = {show} setShow = {setShow} allItems = {allItems} ></Modal>
-        <SDragDropWrapper  >
+        <Modal show = {show} setShow = {setShow} allItems = {allItems} action = {action} editItem={editItem}></Modal>
+        <SDragDropWrapper>
             <DragDropContext onDragEnd={onDragEnd}>
               {week.map((val) => {
                 return(
                 <SCardWrapper>
-                <SAreaTitle>{val.dow}</SAreaTitle> 
+                  <SAreaTitle>{val.dow}</SAreaTitle> 
                 <SbuttonWrapper>
                   <Addbutton 
                   val={val} 
                   onClickAddCard={onClickAddCard}>
                   </Addbutton>
                 </SbuttonWrapper>
-                    <DragDropArea val={val} allItems={allItems}></DragDropArea>
+                    <DragDropArea val={val} allItems={allItems} show = {show} setShow = {setShow} action = {action} setAction = {setAction} editItem = {editItem} setEditItem = {setEditItem}></DragDropArea>
                   </SCardWrapper>
               )})}
             </DragDropContext>

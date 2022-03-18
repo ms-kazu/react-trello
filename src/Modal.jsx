@@ -136,7 +136,8 @@ const SModal = styled.div`
 `
 
 export const Modal = (props) => {
-  const {show, setShow, allItems} = props;
+  const {show, setShow, allItems, action, editItem} = props;
+  console.log(editItem);
 
   const onClickModalClose = () => {
     setShow(!show)
@@ -150,7 +151,8 @@ export const Modal = (props) => {
       practitioner: practitioner,
       eventStart: eventStart,
       eventEnd: eventEnd,
-      category: category
+      category: category,
+      dayId: dayId
     }
     const targetColumn = allItems[dayId];
     const newItems = [...targetColumn[0], newItem];
@@ -165,8 +167,8 @@ export const Modal = (props) => {
   const [eventEnd, setEventEnd] = useState();
   const [selectedWeek, setSelectedWeek] = useState();
   const [category, setCategory] = useState();
-  console.log(eventStart);
-  if (show) {
+
+  if (show && action == "add") {
     return(
       <>
         <SModalBack onClick={onClickModalClose}></SModalBack>
@@ -195,9 +197,9 @@ export const Modal = (props) => {
                   <td><label htmlFor="">担当者名</label></td>
                     <select name="practitioners" id="practitioners-select" onChange={(e) => setPractitioner(e.target.value)}>
                       <option value="">--患者を選択してください--</option>
-                      {practitioners.map((practitioners) => {
+                      {practitioners.map((practitioner) => {
                         return(
-                          <option value={practitioners}>{practitioners}</option>
+                          <option value={practitioner}>{practitioner}</option>
                         )
                       })}
                     </select>
@@ -234,6 +236,93 @@ export const Modal = (props) => {
                       <option value="">--カテゴリを選択してください--</option>
                       <option value="マッサージ">マッサージ</option>
                       <option value="はりきゅう">はりきゅう</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><SCloseButton onClick={onClickModalClose}>閉じる</SCloseButton></td>
+                  <td><SAddButton onClick={onClickAdd}>登録</SAddButton></td>
+                </tr>
+              </tbody>
+            </SInputTable>
+          </SInputFormWrapper>
+        </SModal>
+      </>
+    )
+  }else if(show && action == "edit"){
+    return(
+      <>
+        <SModalBack onClick={onClickModalClose}></SModalBack>
+        <SModal>
+          <SCloseButtonWrapper>
+            <SModalCloseButton onClick={onClickModalClose}>✖️</SModalCloseButton>
+          </SCloseButtonWrapper>
+          <h2>デフォルトスケジュール編集</h2>
+          <SInputFormWrapper>
+            <SInputTable>
+              <tbody>
+                <tr>
+                  <td><label htmlFor="">患者名</label></td>
+                  <td>
+                    <select name="patients" id="patients-select" onChange={(e) => setPatient(e.target.value)}>
+                      <option value="">--患者を選択してください--</option>
+                      {patients.map((patient) => {
+                        return(
+                          <>
+                          {editItem.patient == patient ? <option value={patient} selected>{patient}</option> : <option value={patient}>{patient}</option>}
+                          </>
+                        )
+                      })}
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor="">担当者名</label></td>
+                    <select name="practitioners" id="practitioners-select" onChange={(e) => setPractitioner(e.target.value)}>
+                      <option value="">--患者を選択してください--</option>
+                      {practitioners.map((practitioner) => {
+                        return(
+                          <>
+                          {editItem.practitioner == practitioner ? <option value={practitioner} selected>{practitioner}</option> : <option value={practitioner}>{practitioner}</option>}
+                          </>
+                        )
+                      })}
+                    </select>
+                </tr>
+                <tr>
+                  <td><label htmlFor="">開始時間</label></td>
+                  <td> 
+                    <input type="time" name="eventStart" id="eventStart" step="300" required="required" value={editItem.eventStart} onChange={(e) => setEventStart(e.target.value)}/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor="">終了時間</label></td>
+                  <td> 
+                    <input type="time" name="eventEnd" id="eventEnd" step="300" required="required" value={editItem.eventEnd} onChange={(e) => setEventEnd(e.target.value)}/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor="">曜日</label></td>
+                  <td>
+                    <select name="practitioners" id="practitioners-select" onChange={(e) => setSelectedWeek(e.target.value)}>
+                      <option value="">--曜日を選択してください--</option>
+                      {week.map((val) => {
+                        return(
+                          <>
+                          {editItem.dayId == val.dayId ? <option value={val.dayId} selected>{val.dow}</option> : <option value={val.dayId}>{val.dow}</option>}
+                          </>
+                        )
+                      })}
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label htmlFor="">カテゴリ</label></td>
+                  <td>
+                    <select name="category" id="category-select" onChange={(e) => setCategory(e.target.value)}>
+                      <option value="">--カテゴリを選択してください--</option>
+                      {editItem.category == "マッサージ" ? <option value="マッサージ" selected>マッサージ</option> : <option value="マッサージ" >マッサージ</option>}
+                      {editItem.category == "はりきゅう" ? <option value="はりきゅう" selected>はりきゅう</option> : <option value="はりきゅう">はりきゅう</option>}
                     </select>
                   </td>
                 </tr>

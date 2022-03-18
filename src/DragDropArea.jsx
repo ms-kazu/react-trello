@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Schedules } from './Schedules';
 
 export const DragDropArea = (props) => {
-  const {val, allItems} = props;
+  const {val, allItems, show, setShow, action, setAction, editItem, setEditItem} = props;
   const SDragDropArea = styled.div`
   background-color: #fff;
   border-radius: 10px;
@@ -25,7 +25,7 @@ export const DragDropArea = (props) => {
             backgroundColor: snapshot.isDraggingOver ? val.color : '',
           }}
         >
-        <Schedules schedules={allItems[val.dayId][0]} setSchedules={allItems[val.dayId][1]}></Schedules>
+        <Schedules schedules={allItems[val.dayId][0]} setSchedules={allItems[val.dayId][1]} show = {show} setShow={setShow} action = {action} setAction = {setAction} editItem = {editItem} setEditItem = {setEditItem}></Schedules>
           {provided.placeholder}
         </SDragDropArea>
       )}
