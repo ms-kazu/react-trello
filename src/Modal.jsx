@@ -137,7 +137,14 @@ const SModal = styled.div`
 
 export const Modal = (props) => {
   const {show, setShow, allItems, action, editItem} = props;
-  console.log(editItem);
+  
+    // モーダル監視用
+    const [patient, setPatient] = useState();
+    const [practitioner, setPractitioner] = useState();
+    const [eventStart, setEventStart] = useState();
+    const [eventEnd, setEventEnd] = useState();
+    const [selectedWeek, setSelectedWeek] = useState();
+    const [category, setCategory] = useState();
 
   const onClickModalClose = () => {
     setShow(!show)
@@ -160,13 +167,42 @@ export const Modal = (props) => {
     setShow(!show)
   }
 
-  // モーダル監視用
-  const [patient, setPatient] = useState();
-  const [practitioner, setPractitioner] = useState();
-  const [eventStart, setEventStart] = useState();
-  const [eventEnd, setEventEnd] = useState();
-  const [selectedWeek, setSelectedWeek] = useState();
-  const [category, setCategory] = useState();
+  const onClickEdit = (sourceId, sourceDayId, sourcePatient, sourcePractitioner, sourceEventStart, sourceEventEnd, sourceCategory) => {
+    const dayId = selectedWeek;
+    const id = sourceId;
+
+    const editItem ={
+      id: id,
+      patient: patient ? patient : sourcePatient,
+      practitioner: practitioner ? practitioner : sourcePractitioner,
+      eventStart: eventStart ? eventStart : sourceEventStart,
+      eventEnd: eventEnd ? eventEnd : sourceEventEnd,
+      category: category ? category : sourceCategory,
+      dayId: dayId ? dayId : sourceDayId
+    }
+
+    if (!dayId) {
+      const copiedColumItems = [...allItems[sourceDayId]];
+      console.log(copiedColumItems[0]);
+      console.log(copiedColumItems[1]);
+      const copiedItemIndex = copiedColumItems[0].findIndex(({id}) => id === sourceId);
+      const remove = copiedColumItems[0].splice(copiedItemIndex, 1);
+      copiedColumItems[0].splice(copiedItemIndex, 0, editItem);
+      copiedColumItems[1](copiedColumItems[0]);
+    }else{  
+      const targetColumn = allItems[dayId];
+      const newItems = [...targetColumn[0], editItem];
+      console.log(newItems);
+      targetColumn[1](newItems);
+  
+      const sourceColumn = allItems[sourceDayId];
+      const sourceIndex = sourceColumn[0].findIndex(({id}) => id === sourceId);
+      const remove = sourceColumn[0].splice(sourceIndex, 1);
+    }
+
+
+    setShow(!show)
+  }
 
   if (show && action == "add") {
     return(
@@ -292,13 +328,13 @@ export const Modal = (props) => {
                 <tr>
                   <td><label htmlFor="">開始時間</label></td>
                   <td> 
-                    <input type="time" name="eventStart" id="eventStart" step="300" required="required" value={editItem.eventStart} onChange={(e) => setEventStart(e.target.value)}/>
+                    <input type="time" name="eventStart" id="eventStart" step="300" required="required" value={eventStart} onChange={(e) => setEventStart(e.target.value)}/>
                   </td>
                 </tr>
                 <tr>
                   <td><label htmlFor="">終了時間</label></td>
                   <td> 
-                    <input type="time" name="eventEnd" id="eventEnd" step="300" required="required" value={editItem.eventEnd} onChange={(e) => setEventEnd(e.target.value)}/>
+                    <input type="time" name="eventEnd" id="eventEnd" step="300" required="required" value={eventEnd} onChange={(e) => setEventEnd(e.target.value)}/>
                   </td>
                 </tr>
                 <tr>
@@ -328,7 +364,7 @@ export const Modal = (props) => {
                 </tr>
                 <tr>
                   <td><SCloseButton onClick={onClickModalClose}>閉じる</SCloseButton></td>
-                  <td><SAddButton onClick={onClickAdd}>登録</SAddButton></td>
+                  <td><SAddButton onClick={() => onClickEdit(editItem.id, editItem.dayId, editItem.patient, editItem.practitioner, editItem.eventStart, editItem.eventEnd, editItem.category)}>変更</SAddButton></td>
                 </tr>
               </tbody>
             </SInputTable>
