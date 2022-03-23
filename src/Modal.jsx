@@ -189,7 +189,7 @@ export const Modal = (props) => {
       const remove = copiedColumItems[0].splice(copiedItemIndex, 1);
       copiedColumItems[0].splice(copiedItemIndex, 0, editItem);
       copiedColumItems[1](copiedColumItems[0]);
-    }else{  
+    }else{
       const targetColumn = allItems[dayId];
       const newItems = [...targetColumn[0], editItem];
       console.log(newItems);

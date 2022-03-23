@@ -168,6 +168,8 @@ const App = () => {
       const sourceColumn = [...allItems[`${source.droppableId}`]];
       const destinationColumn  = [...allItems[`${destination.droppableId}`]];
       const remove = sourceColumn[0].splice(source.index, 1);
+      console.log(destination.droppableId);
+      remove[0].dayId = destination.droppableId;
       destinationColumn[0].splice(destination.index, 0, remove[0]);
       sourceColumn[1](sourceColumn[0]);
       destinationColumn[1](destinationColumn[0]);
