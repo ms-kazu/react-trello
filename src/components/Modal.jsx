@@ -1,7 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { useRecoilState, useRecoilValue } from "recoil";
 
 import UUID from 'uuidjs';
+import { patientState } from "../store/patientState";
+import { modalActionState } from "../store/modalActionState";
 
 const practitioners = ["斉藤優", "田中修", "鈴木雄也"];
 const patients = ["橋本 敦", "安達 行雄", "松本 峰", "大和田野 走榛", "宮本 陸斗", "仁八 冠馬", "白河部 陽士郎", "行田 絃輔", "割沢 デンザブロウ", "中岫 永琉斗"];
@@ -136,10 +139,12 @@ const SModal = styled.div`
 `
 
 export const Modal = (props) => {
-  const {show, setShow, allItems, action, editItem} = props;
+  const {show, setShow, allItems, editItem} = props;
+  const action = useRecoilValue(modalActionState);
   
     // モーダル監視用
-    const [patient, setPatient] = useState();
+    // const [patient, setPatient] = useState();
+    const [patient, setPatient] = useRecoilState(patientState)
     const [practitioner, setPractitioner] = useState();
     const [eventStart, setEventStart] = useState();
     const [eventEnd, setEventEnd] = useState();
@@ -183,8 +188,6 @@ export const Modal = (props) => {
 
     if (!dayId) {
       const copiedColumItems = [...allItems[sourceDayId]];
-      console.log(copiedColumItems[0]);
-      console.log(copiedColumItems[1]);
       const copiedItemIndex = copiedColumItems[0].findIndex(({id}) => id === sourceId);
       const remove = copiedColumItems[0].splice(copiedItemIndex, 1);
       copiedColumItems[0].splice(copiedItemIndex, 0, editItem);
@@ -192,7 +195,6 @@ export const Modal = (props) => {
     }else{
       const targetColumn = allItems[dayId];
       const newItems = [...targetColumn[0], editItem];
-      console.log(newItems);
       targetColumn[1](newItems);
   
       const sourceColumn = allItems[sourceDayId];

@@ -1,8 +1,6 @@
-// import React, {useState} from 'react';
+import React, {useState} from 'react';
 import styled from "styled-components";
 import {Draggable} from 'react-beautiful-dnd';
-import { Modal } from './Modal';
-import { useState } from "react";
 
 export const Schedules = (props) => {
   const {schedules, setSchedules, show, setShow, action, setAction, editItem, setEditItem} = props;
