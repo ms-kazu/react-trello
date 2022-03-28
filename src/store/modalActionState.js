@@ -1,6 +1,6 @@
-import { atom } from "recoil";
+// import { atom } from "recoil";
 
-export const modalActionState = atom({
-  key: "modalActionState",
-  default: {action: null }
-})
+// export const modalActionState = atom({
+//   key: "modalActionState",
+//   default: {action: null }
+// })

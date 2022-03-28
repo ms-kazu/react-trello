@@ -1,9 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import styled from "styled-components";
 import {Draggable} from 'react-beautiful-dnd';
+import { useRecoilState, useRecoilValue } from "recoil";
+import { modalState, modalActionState } from "../store/modalState";
+import { editItemState } from '../store/scheduleState';
 
 export const Schedules = (props) => {
-  const {schedules, setSchedules, show, setShow, action, setAction, editItem, setEditItem} = props;
+  const {schedules, setSchedules} = props;
+
+  const [show, setShow] = useRecoilState(modalState);
+  const [action, setAction] = useRecoilState(modalActionState);
+  const [editItem, setEditItem] = useRecoilState(editItemState);
 
   const SPtName = styled.span`
     font-size: 1rem;

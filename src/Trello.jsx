@@ -7,8 +7,8 @@ import { DragDropArea } from './components/DragDropArea'
 import { Addbutton } from './components/AddButton';
 import { Modal } from './components/Modal';
 import { useRecoilState } from 'recoil';
-import { SatItemState } from './store/weekState';
-import { modalActionState } from './store/modalActionState';
+import { modalState, modalActionState } from './store/modalState';
+import { editItemState } from './store/scheduleState';
 
 const week = [
   {
@@ -49,8 +49,9 @@ const week = [
 ];
 
 export const Torello = () =>{
+  console.log("sass");
   const [SunItems, setSunItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `日田_${val}`,
@@ -64,7 +65,7 @@ export const Torello = () =>{
   );
 
   const [MonItems, setMonItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `月田_${val}`,
@@ -78,7 +79,7 @@ export const Torello = () =>{
   );
 
   const [TueItems, setTueItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `火田_${val}`,
@@ -92,7 +93,7 @@ export const Torello = () =>{
   );
 
   const [WedItems, setWedItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `水田_${val}`,
@@ -106,7 +107,7 @@ export const Torello = () =>{
   );
 
   const [ThuItems, setThuItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `木田_${val}`,
@@ -120,7 +121,7 @@ export const Torello = () =>{
   );
 
   const [FriItems, setFriItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `金田_${val}`,
@@ -134,7 +135,7 @@ export const Torello = () =>{
   );
 
   const [SatItems, setSatItems] = useState(
-    [...Array(4).keys()].map((val) => {
+    [...Array(3).keys()].map((val) => {
       return{
         id: UUID.generate(),
         patient: `土田_${val}`,
@@ -197,9 +198,9 @@ export const Torello = () =>{
     targetColumn[1](newItems);
   };
 
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useRecoilState(modalState);
   const [action, setAction] = useRecoilState(modalActionState);
-  const [editItem, setEditItem] = useState();
+  const [editItem, setEditItem] = useRecoilState(editItemState);
 
   const onClickAddModal = () => {
     setShow(!show);
@@ -276,21 +277,21 @@ export const Torello = () =>{
       <STitle><i class="far fa-calendar-alt fa-fw"></i>デフォルトスケジュール</STitle>
       <SKanbanBoard>
         <SAddbuttonWrapper><SAddModalButton onClick={onClickAddModal}>登録</SAddModalButton></SAddbuttonWrapper>
-        <Modal show = {show} setShow = {setShow} allItems = {allItems} editItem={editItem}></Modal>
+        <Modal allItems = {allItems} editItem={editItem}></Modal>
         <SDragDropWrapper>
             <DragDropContext onDragEnd={onDragEnd}>
               {week.map((val) => {
                 return(
                 <SCardWrapper>
                   <SAreaTitle>{val.dow}</SAreaTitle> 
-                <SbuttonWrapper>
-                  <Addbutton 
-                  val={val} 
-                  onClickAddCard={onClickAddCard}>
-                  </Addbutton>
-                </SbuttonWrapper>
-                    <DragDropArea val={val} allItems={allItems} show = {show} setShow = {setShow} editItem = {editItem} setEditItem = {setEditItem}></DragDropArea>
-                  </SCardWrapper>
+                  <SbuttonWrapper>
+                    <Addbutton 
+                    val={val} 
+                    onClickAddCard={onClickAddCard}>
+                    </Addbutton>
+                  </SbuttonWrapper>
+                  <DragDropArea val={val} allItems={allItems}></DragDropArea>
+                </SCardWrapper>
               )})}
             </DragDropContext>
         </SDragDropWrapper>

@@ -4,7 +4,11 @@ import { useRecoilState, useRecoilValue } from "recoil";
 
 import UUID from 'uuidjs';
 import { patientState } from "../store/patientState";
-import { modalActionState } from "../store/modalActionState";
+import { modalState, modalActionState } from "../store/modalState";
+import { practitionerState } from "../store/practitionerState";
+import { selectedWeekState } from "../store/weekState";
+import { categoryState } from "../store/categoryState";
+import { editItemState } from "../store/scheduleState";
 
 const practitioners = ["斉藤優", "田中修", "鈴木雄也"];
 const patients = ["橋本 敦", "安達 行雄", "松本 峰", "大和田野 走榛", "宮本 陸斗", "仁八 冠馬", "白河部 陽士郎", "行田 絃輔", "割沢 デンザブロウ", "中岫 永琉斗"];
@@ -139,20 +143,21 @@ const SModal = styled.div`
 `
 
 export const Modal = (props) => {
-  const {show, setShow, allItems, editItem} = props;
+  const {allItems} = props;
   const action = useRecoilValue(modalActionState);
+  const editItem = useRecoilValue(editItemState);
+  const [show, setShow] = useRecoilState(modalState);
   
-    // モーダル監視用
-    // const [patient, setPatient] = useState();
-    const [patient, setPatient] = useRecoilState(patientState)
-    const [practitioner, setPractitioner] = useState();
-    const [eventStart, setEventStart] = useState();
-    const [eventEnd, setEventEnd] = useState();
-    const [selectedWeek, setSelectedWeek] = useState();
-    const [category, setCategory] = useState();
+  // モーダル監視用
+  const [patient, setPatient] = useRecoilState(patientState);
+  const [practitioner, setPractitioner] = useRecoilState(practitionerState);
+  const [eventStart, setEventStart] = useState();
+  const [eventEnd, setEventEnd] = useState();
+  const [selectedWeek, setSelectedWeek] = useRecoilState(selectedWeekState);
+  const [category, setCategory] = useRecoilState(categoryState);
 
   const onClickModalClose = () => {
-    setShow(!show)
+    setShow(!show);
   }
 
   const onClickAdd = () => {
@@ -169,13 +174,14 @@ export const Modal = (props) => {
     const targetColumn = allItems[dayId];
     const newItems = [...targetColumn[0], newItem];
     targetColumn[1](newItems);
-    setShow(!show)
+    setShow(!show);
   }
 
   const onClickEdit = (sourceId, sourceDayId, sourcePatient, sourcePractitioner, sourceEventStart, sourceEventEnd, sourceCategory) => {
     const dayId = selectedWeek;
     const id = sourceId;
-
+    console.log(selectedWeek);
+    console.log(sourceDayId);
     const editItem ={
       id: id,
       patient: patient ? patient : sourcePatient,
@@ -186,10 +192,10 @@ export const Modal = (props) => {
       dayId: dayId ? dayId : sourceDayId
     }
 
-    if (!dayId) {
+    if (dayId == sourceDayId) {
       const copiedColumItems = [...allItems[sourceDayId]];
       const copiedItemIndex = copiedColumItems[0].findIndex(({id}) => id === sourceId);
-      const remove = copiedColumItems[0].splice(copiedItemIndex, 1);
+      copiedColumItems[0].splice(copiedItemIndex, 1);
       copiedColumItems[0].splice(copiedItemIndex, 0, editItem);
       copiedColumItems[1](copiedColumItems[0]);
     }else{
@@ -199,7 +205,7 @@ export const Modal = (props) => {
   
       const sourceColumn = allItems[sourceDayId];
       const sourceIndex = sourceColumn[0].findIndex(({id}) => id === sourceId);
-      const remove = sourceColumn[0].splice(sourceIndex, 1);
+      sourceColumn[0].splice(sourceIndex, 1);
     }
 
 
