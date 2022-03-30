@@ -6,15 +6,17 @@ import { Schedules } from './Schedules';
 
 export const DragDropArea = (props) => {
   const {val, allItems} = props;
+
   const SDragDropArea = styled.div`
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 5px;
-  margin: 3px;
-  max-height: 665px;
-  text-align: center;
-  overflow: scroll;
-`;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 3px;
+    max-height: 665px;
+    text-align: center;
+    overflow: scroll;
+  `;
+
   return(
     <Droppable droppableId={val.dayId} key={val.dayId}>
       {(provided, snapshot) => (

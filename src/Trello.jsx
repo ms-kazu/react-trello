@@ -1,14 +1,20 @@
-import {DragDropContext} from 'react-beautiful-dnd';
+import { DragDropContext } from 'react-beautiful-dnd';
 import styled from "styled-components";
-import UUID from 'uuidjs';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { useRecoilState } from 'recoil';
 
+// コンポーネント
 import { DragDropArea } from './components/DragDropArea'
 import { Addbutton } from './components/AddButton';
 import { Modal } from './components/Modal';
-import { useRecoilState } from 'recoil';
-import { modalState, modalActionState } from './store/modalState';
-import { editItemState } from './store/scheduleState';
+
+// Global state
+import { editItemState, FriItemState, MonItemState, SunItemState, ThuItemState, TueItemState, WedItemState, SatItemState } from './store/scheduleState';
+
+// カスタムフック
+import { useShowModal } from "./hooks/useShowModal";
+import { useAddCard } from "./hooks/useAddCard";
+import { useOnDragEnd } from "./hooks/useOnDragEnd";
 
 const week = [
   {
@@ -50,106 +56,114 @@ const week = [
 
 export const Torello = () =>{
   console.log("sass");
-  const [SunItems, setSunItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `日田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Sun"
-      }
-    })
-  );
+  // const [SunItems, setSunItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `日田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Sun"
+  //     }
+  //   })
+  // );
 
-  const [MonItems, setMonItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `月田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Mon"
-      }
-    })
-  );
+  // const [MonItems, setMonItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `月田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Mon"
+  //     }
+  //   })
+  // );
 
-  const [TueItems, setTueItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `火田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Tue"
-      }
-    })
-  );
+  // const [TueItems, setTueItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `火田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Tue"
+  //     }
+  //   })
+  // );
 
-  const [WedItems, setWedItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `水田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Wed"
-      }
-    })
-  );
+  // const [WedItems, setWedItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `水田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Wed"
+  //     }
+  //   })
+  // );
 
-  const [ThuItems, setThuItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `木田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Thu"
-      }
-    })
-  );
+  // const [ThuItems, setThuItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `木田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Thu"
+  //     }
+  //   })
+  // );
 
-  const [FriItems, setFriItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `金田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Fri"
-      }
-    })
-  );
+  // const [FriItems, setFriItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `金田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Fri",
+  //       writable: true
+  //     }
+  //   })
+  // );
 
-  const [SatItems, setSatItems] = useState(
-    [...Array(3).keys()].map((val) => {
-      return{
-        id: UUID.generate(),
-        patient: `土田_${val}`,
-        practitioner: "坂田",
-        category: "マッサージ",
-        eventStart: "11:00",
-        eventEnd: "11:15",
-        dayId: "Sat"
-      }
-    })
-  );
+  // const [SatItems, setSatItems] = useState(
+  //   [...Array(3).keys()].map((val) => {
+  //     return{
+  //       id: UUID.generate(),
+  //       patient: `土田_${val}`,
+  //       practitioner: "坂田",
+  //       category: "マッサージ",
+  //       eventStart: "11:00",
+  //       eventEnd: "11:15",
+  //       dayId: "Sat"
+  //     }
+  //   })
+  // );
 
-  
-  // const [SatItems, setSatItems] = useRecoilState(SatItemState);
+  const [SunItems, setSunItems] = useRecoilState(SunItemState);
+  const [MonItems, setMonItems] = useRecoilState(MonItemState);
+  const [TueItems, setTueItems] = useRecoilState(TueItemState);
+  const [WedItems, setWedItems] = useRecoilState(WedItemState);
+  const [ThuItems, setThuItems] = useRecoilState(ThuItemState);
+  const [FriItems, setFriItems] = useRecoilState(FriItemState);
+  const [SatItems, setSatItems] = useRecoilState(SatItemState);
+
+
   
   const allItems = {
     "Sun": [SunItems, setSunItems],
@@ -161,51 +175,66 @@ export const Torello = () =>{
     "Sat": [SatItems, setSatItems],
   };
 
+  const { dragDropItem } = useOnDragEnd();
   const onDragEnd = (result) => {
-    const {source, destination} = result;
-    if(!destination) return;
-    if (source.droppableId !== destination.droppableId) {
-      const sourceColumn = [...allItems[`${source.droppableId}`]];
-      const destinationColumn  = [...allItems[`${destination.droppableId}`]];
-      const remove = sourceColumn[0].splice(source.index, 1);
-      console.log(destination.droppableId);
-      remove[0].dayId = destination.droppableId;
-      destinationColumn[0].splice(destination.index, 0, remove[0]);
-      sourceColumn[1](sourceColumn[0]);
-      destinationColumn[1](destinationColumn[0]);
-    } else {
-      const resDayId = source.droppableId;
-      const copiedColumItems = [...allItems[`${resDayId}`]]
-      const remove = copiedColumItems[0].splice(source.index, 1);
-      copiedColumItems[0].splice(destination.index, 0, remove[0]);
-      copiedColumItems[1](copiedColumItems[0]);
-    }
+    dragDropItem(result)
+    // const {source, destination} = result;
+    // if(!destination) return;
+    // if (source.droppableId !== destination.droppableId) {
+    //   try{
+    //     const sourceColumn = [...allItems[`${source.droppableId}`]];
+    //     const sourceWeekItems = [...sourceColumn[0]];
+    //     const destinationColumn  = [...allItems[`${destination.droppableId}`]];
+    //     const destinationWeekItems  = [...destinationColumn[0]];
+    //     const remove = sourceWeekItems.splice(source.index, 1);
+    //     const removeItem = {...remove[0]}
+    //     removeItem.dayId = destination.droppableId;
+
+    //     destinationWeekItems.splice(destination.index, 0, remove[0]);
+
+    //     sourceColumn[1](sourceWeekItems);
+    //     destinationColumn[1](destinationWeekItems);
+    //   }catch(e){
+    //     console.log(e)
+    //   }
+    // } else {
+    //   const resDayId = source.droppableId;
+    //   const copiedColumItems = [...allItems[`${resDayId}`]]
+    //   const copiedWeekItems = [...copiedColumItems[0]]
+    //   const remove = copiedWeekItems.splice(source.index, 1);
+    //   copiedWeekItems.splice(destination.index, 0, remove[0]);
+    //   copiedColumItems[1](copiedWeekItems);
+    // }
   };
 
+  const { addCard } = useAddCard()
   const onClickAddCard = (e) => {
-    const dayId = e.target.value;
-    const newItem ={
-      id: UUID.generate(),
-      patient: "未設定",
-      practitioner: "未設定",
-      eventStart: "未設定",
-      eventEnd: "未設定",
-      category: "未設定",
-      dayId: dayId
-    }
-    const targetColumn = allItems[dayId];
-    const newItems = [...targetColumn[0], newItem];
-    targetColumn[1](newItems);
+    addCard(e)
+    // const dayId = e.target.value;
+    // const newItem ={
+    //   id: UUID.generate(),
+    //   patient: "未設定",
+    //   practitioner: "未設定",
+    //   eventStart: "未設定",
+    //   eventEnd: "未設定",
+    //   category: "未設定",
+    //   dayId: dayId
+    // }
+    // const targetColumn = allItems[dayId];
+    // const newItems = [...targetColumn[0], newItem];
+    // targetColumn[1](newItems);
   };
 
-  const [show, setShow] = useRecoilState(modalState);
-  const [action, setAction] = useRecoilState(modalActionState);
   const [editItem, setEditItem] = useRecoilState(editItemState);
 
-  const onClickAddModal = () => {
+
+  const { showModal, show, setShow, action, setAction } = useShowModal();
+  const onClickShowModal = () => {
+    showModal()
     setShow(!show);
     setAction("add");
-  }
+  };
+  
 
   const SKanbanBoard = styled.div`
     height: 100vh;
@@ -276,7 +305,7 @@ export const Torello = () =>{
       <SHeader>MS Torello</SHeader>
       <STitle><i class="far fa-calendar-alt fa-fw"></i>デフォルトスケジュール</STitle>
       <SKanbanBoard>
-        <SAddbuttonWrapper><SAddModalButton onClick={onClickAddModal}>登録</SAddModalButton></SAddbuttonWrapper>
+        <SAddbuttonWrapper><SAddModalButton onClick={onClickShowModal}>登録</SAddModalButton></SAddbuttonWrapper>
         <Modal allItems = {allItems} editItem={editItem}></Modal>
         <SDragDropWrapper>
             <DragDropContext onDragEnd={onDragEnd}>

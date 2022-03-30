@@ -10,6 +10,10 @@ import { selectedWeekState } from "../store/weekState";
 import { categoryState } from "../store/categoryState";
 import { editItemState } from "../store/scheduleState";
 
+// custom hooks
+import { useAddCard } from "../hooks/useAddCard";
+import { useEditCard } from "../hooks/useEditCard"
+
 const practitioners = ["斉藤優", "田中修", "鈴木雄也"];
 const patients = ["橋本 敦", "安達 行雄", "松本 峰", "大和田野 走榛", "宮本 陸斗", "仁八 冠馬", "白河部 陽士郎", "行田 絃輔", "割沢 デンザブロウ", "中岫 永琉斗"];
 const week = [
@@ -160,6 +164,7 @@ export const Modal = (props) => {
     setShow(!show);
   }
 
+  const { addCard } = useAddCard()
   const onClickAdd = () => {
     const dayId = selectedWeek;
     const newItem ={
@@ -171,17 +176,19 @@ export const Modal = (props) => {
       category: category,
       dayId: dayId
     }
-    const targetColumn = allItems[dayId];
-    const newItems = [...targetColumn[0], newItem];
-    targetColumn[1](newItems);
-    setShow(!show);
+
+    addCard(newItem, selectedWeek)
+    // const targetColumn = allItems[dayId];
+    // const newItems = [...targetColumn[0], newItem];
+    // targetColumn[1](newItems);
+    // setShow(!show);
   }
 
+  const { editCard } = useEditCard();
   const onClickEdit = (sourceId, sourceDayId, sourcePatient, sourcePractitioner, sourceEventStart, sourceEventEnd, sourceCategory) => {
     const dayId = selectedWeek;
     const id = sourceId;
-    console.log(selectedWeek);
-    console.log(sourceDayId);
+
     const editItem ={
       id: id,
       patient: patient ? patient : sourcePatient,
@@ -190,26 +197,26 @@ export const Modal = (props) => {
       eventEnd: eventEnd ? eventEnd : sourceEventEnd,
       category: category ? category : sourceCategory,
       dayId: dayId ? dayId : sourceDayId
-    }
+    };
 
-    if (dayId == sourceDayId) {
-      const copiedColumItems = [...allItems[sourceDayId]];
-      const copiedItemIndex = copiedColumItems[0].findIndex(({id}) => id === sourceId);
-      copiedColumItems[0].splice(copiedItemIndex, 1);
-      copiedColumItems[0].splice(copiedItemIndex, 0, editItem);
-      copiedColumItems[1](copiedColumItems[0]);
-    }else{
-      const targetColumn = allItems[dayId];
-      const newItems = [...targetColumn[0], editItem];
-      targetColumn[1](newItems);
-  
-      const sourceColumn = allItems[sourceDayId];
-      const sourceIndex = sourceColumn[0].findIndex(({id}) => id === sourceId);
-      sourceColumn[0].splice(sourceIndex, 1);
-    }
+    editCard(sourceId, selectedWeek, sourceDayId, editItem)
 
+    // if (dayId == sourceDayId) {
+    //   const copiedColumItems = [...allItems[sourceDayId]];
+    //   const copiedItemIndex = copiedColumItems[0].findIndex(({id}) => id === sourceId);
+    //   copiedColumItems[0].splice(copiedItemIndex, 1);
+    //   copiedColumItems[0].splice(copiedItemIndex, 0, editItem);
+    //   copiedColumItems[1](copiedColumItems[0]);
+    // }else{
+    //   const targetColumn = allItems[dayId];
+    //   const newItems = [...targetColumn[0], editItem];
+    //   targetColumn[1](newItems);
+    //   const sourceColumn = allItems[sourceDayId];
+    //   const sourceIndex = sourceColumn[0].findIndex(({id}) => id === sourceId);
+    //   sourceColumn[0].splice(sourceIndex, 1);
+    // }
 
-    setShow(!show)
+    // setShow(!show);
   }
 
   if (show && action == "add") {

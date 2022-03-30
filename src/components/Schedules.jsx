@@ -1,16 +1,15 @@
 import React from 'react';
 import styled from "styled-components";
 import {Draggable} from 'react-beautiful-dnd';
-import { useRecoilState, useRecoilValue } from "recoil";
-import { modalState, modalActionState } from "../store/modalState";
-import { editItemState } from '../store/scheduleState';
+
+// カスタムフック
+import { useShowModal } from "../hooks/useShowModal";
+import { useDeleteCard } from '../hooks/useDeleteCard';
 
 export const Schedules = (props) => {
   const {schedules, setSchedules} = props;
-
-  const [show, setShow] = useRecoilState(modalState);
-  const [action, setAction] = useRecoilState(modalActionState);
-  const [editItem, setEditItem] = useRecoilState(editItemState);
+  const { editCard } = useShowModal();
+  const { deleteCard} = useDeleteCard();
 
   const SPtName = styled.span`
     font-size: 1rem;
@@ -100,26 +99,25 @@ export const Schedules = (props) => {
   `
 
   const onClickEditCard = (item) => {
-    setShow(!show)
-    setAction("edit")
-    setEditItem(item);
-  }
-
-
-
+    // setShow(!show);
+    // setAction("edit");
+    // setEditItem(item);
+    editCard(item);
+  };
 
   const onClickDeleteCard = (item) =>{
-    const result = window.confirm("削除しますか？");
-    if (result) {
-      const resId = item.id;
-      const targetIndex = schedules.findIndex(({id}) => id === resId);
-      const newSchedules = [...schedules]
-      newSchedules.splice(targetIndex, 1);
-      setSchedules(newSchedules)
-    }else{
-      return
-    }
-  }
+    deleteCard(schedules, setSchedules, item)
+    // const result = window.confirm("削除しますか？");
+    // if (result) {
+    //   const resId = item.id;
+    //   const targetIndex = schedules.findIndex(({id}) => id === resId);
+    //   const newSchedules = [...schedules];
+    //   newSchedules.splice(targetIndex, 1);
+    //   setSchedules(newSchedules)
+    // }else{
+    //   return
+    // }
+  };
 
   return(
     <>
@@ -129,7 +127,7 @@ export const Schedules = (props) => {
           <SScheduleCard
             ref={provided.innerRef}
             {...provided.draggableProps}
-            {...provided.dragHandleProps}d
+            {...provided.dragHandleProps}
           > 
             <SCardButtonWrapper>
               <SCardEditButton onClick={() => onClickEditCard(item)}><i class="fas fa-edit"></i></SCardEditButton>
@@ -144,5 +142,5 @@ export const Schedules = (props) => {
       </Draggable>
       ))}
     </>
-  )
-}
+  );
+};
